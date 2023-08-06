@@ -1,0 +1,1051 @@
+#:kivy 2.1.0
+#:import arabic_reshaper arabic_reshaper
+#:import get_display bidi.algorithm.get_display
+#:import date datetime.date
+#:import timedelta datetime.timedelta
+#:import StringProperty kivy.properties.StringProperty
+
+<IntroScreen>:
+    BoxLayout:
+        orientation:'vertical'
+        size:root.size
+        pos: root.pos
+        padding:10
+        canvas.before:
+            Color:
+                rgba: 1, 0, 1, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+        FitImage:
+            id: image1
+            source: "n1.png"
+            size_hint_y: .35
+            pos_hint: {"top": 1}
+            radius: [36, 36, 0, 0, ]
+        Button:
+            font_name: 'Arial'
+            halign: "right"
+            font_size:40
+            text: get_display(arabic_reshaper.reshape('دخول'))
+            background_color:1, 0, 0, 1
+            size_hint:1,.1
+            pos:50,50
+            on_press: root.manager.current = 'calc'
+            Image:
+                source:'s.png'
+                center_x:self.parent.center_x
+                center_y:self.parent.center_y
+        Button:
+            font_name: 'Arial'
+            halign: "right"
+            font_size:20
+            text: get_display(arabic_reshaper.reshape('للدعم الفنى أضغط هنا'))
+            background_color:0, 0, 1, 1
+            size_hint:1,.05
+            pos:50,50
+            on_press:root.openweb()
+
+
+<CalcScreen>:
+   
+    
+    year:year
+    mon:mon
+    day:day
+    GridLayout:
+        canvas.before:
+            Color:
+                rgba: 0, 0, 1, 1 
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        cols:1
+        
+        size:root.width,root.height
+        
+        GridLayout:
+            canvas.before:
+                Color:
+                    rgba: 1,1, 1,1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size 
+            cols:1
+            size_hint:.5,.5
+
+            Label:
+                id:result 
+                
+                font_name: 'Arial'
+                halign: "center"
+                font_size:40
+                text_size: self.width, None
+                bold:True
+                italic:True
+                color:0,0,0,1
+                size_hint:.5,.5
+                size:self.size
+                text: get_display(arabic_reshaper.reshape('نسخة مجانية تمتد فقط الى أخر مايو 2023'))
+               
+            Label:
+                id:result1	 
+                font_name: 'Arial'
+                halign: "center"
+                font_size:40
+                text_size: self.width, None
+                bold:True
+                text: get_display(arabic_reshaper.reshape(''))
+                font_color:0,0, 0, 0
+            Label:
+                id:result2	 
+                font_name: 'Arial'
+                halign: "right"
+                font_size:26
+                bold:True
+                hint_size:.2,.2
+                text: get_display(arabic_reshaper.reshape(''))
+                color:0,0, 0, 1
+        GridLayout:
+           
+            cols:3
+            Label:
+                font_name: 'Arial'
+                halign: "right"
+                color:1,0,0,1
+                font_size:40
+                text: get_display(arabic_reshaper.reshape('السنة'))
+                
+            Label:
+                
+                font_name: 'Arial'
+                halign: "right"
+                font_size:40
+                color:0,1,0,1
+                text:today.month
+                text: get_display(arabic_reshaper.reshape('الشهر'))
+            Label:
+                
+                font_name: 'Arial'
+                halign: "right"
+                font_size:40
+                color:1,1,0,1
+                text:today.day
+                text: get_display(arabic_reshaper.reshape('اليوم'))
+            Label:
+                id:year
+                
+                color:1,0,0,1
+                text: root.yr() if int(slider.value)<2020 else str(slider.value)
+            Label:
+                id:mon
+                color:0,1,0,1
+                text:  root.mn() if int(slider1.value)== 0  else str(int(slider1.value))
+            Label:
+                id:day
+                color:1,1,0,1  
+                text: root.dy() if int (slider2.value)== 0 else str(int(slider2.value))
+            Slider:
+                id: slider
+                
+                min: 2019
+                max:0 if date.today()>date(2023,6,1) else 2050 # for user upgrad aap
+                step: 1
+                orientation: 'horizontal'
+               
+
+         
+            Slider:
+                id: slider1
+                min:0 #-1 if date.today()>date(2023,6,1) else 0 # for user upgrad aap==== 0
+                max:12#-1 if date.today()>date(2023,5,31) else 12 # for user upgrad aap====12
+                step: 1
+                orientation: 'horizontal'
+            
+            
+            Slider:
+                id: slider2
+                min: 0
+                max:31 if  mon.text in ['1','3','5','7','8','10','12'] else 30 if mon.text in ['4','6','9','11'] else 29 if  mon.text =='2' and int(slider.value) % 4 ==0 else  28  # use if condtion in kviy file
+                step: 1
+                orientation: 'horizontal'
+
+        GridLayout:
+            
+            cols:5
+            size_hint:1,.2
+            Button:
+                font_name: 'Arial'
+                halign: "right"
+                font_size:40
+                text: get_display(arabic_reshaper.reshape('S'))
+                background_color:1, 0, 0, 1
+                on_press: root.manager.current = 'save'
+                Image:
+                    source:'save.png'
+                    center_x:self.parent.center_x
+                    center_y:self.parent.center_y
+            Button:
+                font_name: 'Arial'
+                halign: "right"
+                font_size: 40
+                text: get_display(arabic_reshaper.reshape('N'))
+                background_color:1, 0, 0, 1
+                on_press:root. upgrad_notif()
+                Image:
+                    source:'notif.png'
+                    center_x:self.parent.center_x
+                    center_y:self.parent.center_y
+            Button:
+                font_name: 'Arial'
+                halign: "right"
+                font_size:40
+                text: get_display(arabic_reshaper.reshape('L'))
+                background_color:1, 0, 0, 1
+                on_press: root.manager.current = 'settings'
+                Image:
+                    source:'list.png'
+                    center_x:self.parent.center_x
+                    center_y:self.parent.center_y
+            Button:
+                font_name: 'Arial'
+                halign: "right"
+                font_size:26
+                text: get_display(arabic_reshaper.reshape('C'))
+                background_color:1, 0, 0, 1
+                on_press: root.cancel_all()
+                Image:
+                    source:'cancel.png'
+                    center_x:self.parent.center_x
+                    center_y:self.parent.center_y
+            Button:
+                font_name: 'Arial'
+                halign: "right"
+                font_size:40
+                text: get_display(arabic_reshaper.reshape('+'))
+                background_color:1, 0, 0, 1
+                on_press:root.manager.current = 'add'
+                Image:
+                    source:'add.png'
+                    center_x:self.parent.center_x
+                    center_y:self.parent.center_y
+
+
+
+                   
+        PageLayout:
+      
+            GridLayout:
+                cols:4
+                Button:
+                    id:btn1
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold:True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('نقض مدنى'))
+                    background_color:0, 0, 1, 1
+                    on_press:root.Up_datelable (60,0,)
+                    fun:1
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold:True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('نقض جنائى'))
+                    background_color:0, 0, 1, 1
+                    on_press:root.Up_datelable1 (60,0,)
+                Button:
+                    id:btn3
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold:True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('إستئناف'))
+                    background_color:0, 0, 1, 1
+                    on_press:root. Up_datelable (40,0,)
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold:True
+                    font_size:26
+                    bold:True
+                    text: get_display(arabic_reshaper.reshape('مستأنف م'))
+                    background_color:0, 0, 1, 1
+                    on_press:root. Up_datelable (15,0)
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('إعادة نظر'))
+                    background_color:0, 0, 1, 1
+                    on_press:root. Up_datelable (40,0,1)
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('وقف جزائى'))
+                    background_color:0, 0, 1, 1
+                    on_press:root. Up_datelable (1,15,0,"months")
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('وقف تعليقى'))
+                    background_color:0, 0, 1, 1
+                    on_press:root.Up_datelable (6,0,0,"months")
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold:True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('تجديد شطب'))
+                    background_color:0, 0, 1, 1
+                    on_press:root. Up_datelable (60,0,1)
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold:True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('سقوط خ'))
+                    background_color:0, 0, 1, 1
+                    on_press:root.Up_datelable (6,0,1,"months")
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold:True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('إنقضاء خ'))
+                    background_color:0, 0, 1, 1
+                    on_press:root.Up_datelable (2,0,0,"years")
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('طلب إغفال'))
+                    background_color:0, 0, 1, 1
+                    on_press:root.Up_datelable (6,0,2,"months")
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('تظلم عريضه'))
+                    background_color:0, 0, 1, 1
+                    on_press:root.Up_datelable (10,0)
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape(' تفدير رسوم'))
+                    background_color:0, 0, 1, 1
+                    on_press:root.Up_datelable (8,0,1)
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape( 'سقوط عريضه'))
+                    background_color:0, 0, 1, 1
+                    on_press:root.Up_datelable (3,0,0,"months")
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('طعن حيازه'))
+                    background_color:0, 0, 1, 1
+                    on_press:root.Up_datelable (15,0,1)
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('شواهد تزوير'))
+                    background_color:0, 0, 1, 1
+                    on_press:root.Up_datelable (8,0,)
+            
+            GridLayout:
+                cols:4
+                
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('طعن قرار'))
+                    background_color:1, 1, 0, 1
+                    on_press:root.Up_datelable (60,0,2)
+                Button:
+                    
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('طعن جزاء'))
+                    background_color:1, 1, 0, 1
+                    on_press:root.Up_datelable (60,0,3)
+                Button:
+                    
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('ك أمر أداء'))
+                    background_color:1, 1, 0, 1
+                    on_press:root.Up_datelable (3,0,1,"months")
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('أعلان ح تحفظى'))
+                    background_color:1, 1, 0, 1
+                    on_press:root.Up_datelable (8,0,2)
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('صحةالحجز'))
+                    background_color:1, 1, 0, 1
+                    on_press:root.Up_datelable (8,0,3)
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('إيداع ق ش'))
+                    background_color:1, 1, 0, 1
+                    on_press:root.Up_datelable (90,0,)
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('ع إنذار طاعة'))
+                    background_color:1, 1, 0, 1
+                    on_press:root.Up_datelable (30,0)
+
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('اخذ بالشفعه'))
+                    background_color:1, 1, 0, 1
+                    on_press:root.Up_datelable (4,0,0,"months")
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('سقوط شكوى'))
+                    background_color:1, 1, 0, 1
+                    on_press:root.Up_datelable (3,0,2,"months")
+
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('س .جنح'))
+                    background_color:1, 1, 0, 1
+                    on_press:root.Up_datelable (10,0,1)
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('تقادم جنحه'))
+                    background_color:1, 1, 0, 1
+                    on_press:root.Up_datelable (3,0,2,"years")
+
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('تقادم جناية'))
+                    background_color:1, 1, 0, 1
+                    on_press:root.Up_datelable (10,0,2,"years")
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('تقادم مخالفه'))
+                    background_color:1, 1, 0, 1
+                    on_press:root.Up_datelable (1,0,0,"years")
+
+
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('مغلق'))
+                    background_color:1, 1, 0, 1
+                    Image:
+                        source:'c.png'
+                        center_x:self.parent.center_x
+                        center_y:self.parent.center_y
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('مغلق'))
+                    background_color:1, 1, 0, 1
+                    Image:
+                        source:'c.png'
+                        center_x:self.parent.center_x
+                        center_y:self.parent.center_y
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('مغلق'))
+                    background_color:1, 1, 0, 1
+                    Image:
+                        source:'c.png'
+                        center_x:self.parent.center_x
+                        center_y:self.parent.center_y
+
+            GridLayout:
+                cols:4
+
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('مغلق'))
+                    background_color:0, .25, .5, 1
+                    on_press:root.up_datelable()
+                    Image:
+                        source:'c.png'
+                        center_x:self.parent.center_x
+                        center_y:self.parent.center_y
+                Button:
+
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('مغلق'))
+                    background_color:0, .25, .5, 1
+                    on_press:root.up_datelable()
+                    Image:
+                        source:'c.png'
+                        center_x:self.parent.center_x
+                        center_y:self.parent.center_y
+                Button:
+
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('مغلق'))
+                    background_color:0, .25, .5, 1
+                    Image:
+                        source:'c.png'
+                        center_x:self.parent.center_x
+                        center_y:self.parent.center_y
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('مغلق'))
+                    background_color:0, .25, .5, 1
+                    Image:
+                        source:'c.png'
+                        center_x:self.parent.center_x
+                        center_y:self.parent.center_y
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('مغلق'))
+                    background_color:0, .25, .5, 1
+                    Image:
+                        source:'c.png'
+                        center_x:self.parent.center_x
+                        center_y:self.parent.center_y
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('مغلق'))
+                    background_color:0, .25, .5, 1
+                    Image:
+                        source:'c.png'
+                        center_x:self.parent.center_x
+                        center_y:self.parent.center_y
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('مغلق'))
+                    background_color:0, .25, .5, 1
+                    Image:
+                        source:'c.png'
+                        center_x:self.parent.center_x
+                        center_y:self.parent.center_y
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('مغلق'))
+                    background_color:0, .25, .5, 1
+                    Image:
+                        source:'c.png'
+                        center_x:self.parent.center_x
+                        center_y:self.parent.center_y
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('مغلق'))
+                    background_color:0, .25, .5, 1
+                    Image:
+                        source:'c.png'
+                        center_x:self.parent.center_x
+                        center_y:self.parent.center_y
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('مغلق'))
+                    background_color:0, .25, .5, 1
+                    Image:
+                        source:'c.png'
+                        center_x:self.parent.center_x
+                        center_y:self.parent.center_y
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('مغلق'))
+                    background_color:0, .25, .5, 1
+                    Image:
+                        source:'c.png'
+                        center_x:self.parent.center_x
+                        center_y:self.parent.center_y
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('مغلق'))
+                    background_color:0, .25, .5, 1
+                    Image:
+                        source:'c.png'
+                        center_x:self.parent.center_x
+                        center_y:self.parent.center_y
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('مغلق'))
+                    background_color:0, .25, .5, 1
+                    Image:
+                        source:'c.png'
+                        center_x:self.parent.center_x
+                        center_y:self.parent.center_y
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('مغلق'))
+                    background_color:0, .25, .5, 1
+                    Image:
+                        source:'c.png'
+                        center_x:self.parent.center_x
+                        center_y:self.parent.center_y
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('مغلق'))
+                    background_color:0, .25, .5, 1
+                    Image:
+                        source:'c.png'
+                        center_x:self.parent.center_x
+                        center_y:self.parent.center_y
+                Button:
+                    font_name: 'Arial'
+                    halign: "right"
+                    bold :True
+                    font_size:26
+                    text: get_display(arabic_reshaper.reshape('مغلق'))
+                    background_color:0, .25, .5, 1
+                    Image:
+                        source:'c.png'
+                        center_x:self.parent.center_x
+                        center_y:self.parent.center_y
+
+<SettingsScreen>:
+    GridLayout:
+        canvas.before:
+            Color:
+                rgba: 0, 0, 1, 1 
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+        cols:1
+        size:root.width,root.height
+        ScrollView:
+            size: self.size
+            do_scroll_x: False
+            do_scroll_y: True
+            Label:
+                id:lists
+                font_name: 'Arial'
+                halign: "right"
+                font_size:26
+                text: get_display(arabic_reshaper.reshape(''))
+                size_hint_y: None
+                height: self.texture_size[1]
+                text_size: self.width, None
+                padding: 10, 10
+                
+        Button:
+            font_name: 'Arial'
+            halign: "right"
+            font_size:26
+            text: get_display(arabic_reshaper.reshape('أظهر مواعيدى'))
+            background_color:0, 0, 1, 1
+            size_hint:.2,.2 
+            pos:50,50
+            on_press:root.view() if lists.text == '' else None
+        Button:
+            font_name: 'Arial'
+            halign: "right"
+            font_size:26
+            text: get_display(arabic_reshaper.reshape('إخفاء المواعيد'))
+            background_color:0, 0, 1, 1
+            size_hint:.2,.2 
+            pos:50,50
+            on_press:root.refresh()
+        Button:
+            font_name: 'Arial'
+            halign: "right"
+            font_size:26
+            text: get_display(arabic_reshaper.reshape('مسح المواعيد'))
+            background_color:0, 0, 1, 1
+            size_hint:.2,.2
+            pos:50,50
+            on_press:root.dell_all()
+        Button:
+            font_name: 'Arial'
+            halign: "right"
+            font_size:26
+            text: get_display(arabic_reshaper.reshape('الرجوع للحاسبة'))
+            background_color:0, 0, 1, 1
+            size_hint:.2,.2 
+            pos:50,50
+            on_press: root.manager.current = 'calc'
+<EriaScreen>:
+    
+    GridLayout:
+        canvas.before:
+            Color:
+                rgba: 0, 0, 1, 1 
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+        cols:4
+        Label:
+            id:My_city    
+            font_name: 'Arial'
+            halign: "right"
+            font_size:26
+            
+            text: get_display(arabic_reshaper.reshape(''))
+        Spinner:
+            id:spinner1
+              
+            font_name: 'Arial'
+            halign: "right"
+            font_size:26
+            
+            
+            text: get_display(arabic_reshaper.reshape('حدد مدينتك'))
+            values:['Alexandria','Aswan ' ,'Asyut','Banha' ,'Bani_Sweif','Cairo','Damanhur','Damietta ','Fayoum','Mansoura' ,'Minya','Hurghada','Matrouh','Edfu' ,'Ismailia ','Kafr_El_Sheikh','Luxor' , 'Mahalla','Malawi','Port_Said','Qena' ,'shrmalshykh', 'Shbeen_El_Koom','Sohag', 'Suez','Tanta','Zagazig',]#'out_of_Egypt']
+            on_text:root.spinner_clicked1(spinner1.text)
+            
+        Label:
+            id:My_cor    
+            font_name: 'Arial'
+            halign: "right"
+            font_size:26
+            
+            text: get_display(arabic_reshaper.reshape(''))
+        Spinner:
+            id:spinner2
+            size_hint:1,.4
+            font_name: 'Arial'
+            halign: "right"
+            font_size:26
+            text: get_display(arabic_reshaper.reshape('حدد مكان المحكمة'))
+            values:['Alexandria','Aswan ' ,'Asyut','Banha' ,'Bani_Sweif','Cairo','Damanhur','Damietta ','Fayoum','Mansoura' ,'Minya','Hurghada','Matrouh','Edfu' ,'Ismailia ','Kafr_El_Sheikh','Luxor' , 'Mahalla','Malawi','Port_Said','Qena' ,'shrmalshykh', 'Shbeen_El_Koom','Sohag', 'Suez','Tanta','Zagazig']
+            on_text:root.spinner_clicked2(spinner2.text)
+            
+        Button:
+            font_name: 'Arial'
+            halign: "right"
+            font_size:26
+            text: get_display(arabic_reshaper.reshape('الرجوع للحاسبة'))
+            background_color:0, 0, 1, 1
+            size_hint:.2,.2 
+            pos:50,50
+            on_press: root.manager.current = 'calc'
+        Button:
+            font_name: 'Arial'
+            halign: "right"
+            font_size:26
+            text: get_display(arabic_reshaper.reshape('+ميعاد مسافه'))
+            background_color:0, 0, 1, 1
+            size_hint:.2,.2 
+            pos:50,50 
+            on_press:root.btn_eria()
+        Button:
+            font_name: 'Arial'
+            halign: "right"
+            font_size:26
+            text: get_display(arabic_reshaper.reshape('مواعيدى'))
+            background_color:0, 0, 1, 1
+            size_hint:.2,.2 
+            pos:50,50
+            on_press: root.manager.current = 'settings' 
+        Button:
+            font_name: 'Arial'
+            halign: "right"
+            font_size:26
+            text: get_display(arabic_reshaper.reshape('+'))
+            background_color:0, 0, 1, 1
+            size_hint:.2,.2 
+            pos:50,50
+            on_press:root.manager.current = 'add'
+<SaveScreen>:
+    BoxLayout:
+        orientation:'vertical'
+        size:root.size
+        pos: root.pos
+        padding:10
+        canvas.before:
+            Color:
+                rgba: 1, 0, 1, 1 
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+        
+        Label:
+            id :lab
+            font_name:"Arial"
+            halign: "right"
+            
+            font_size:26
+            text:get_display(arabic_reshaper.reshape(input.text))
+        TextInput:
+            id:input
+            font_name:"Arial"
+            halign: "right"
+            str :StringProperty()
+            
+            font_size:26
+            text: get_display(arabic_reshaper.reshape(u''))
+            multiline:False 
+            size_hint:.05,.3 
+            pos_hint: {"center_x": .5, "center_y": .5}
+        Label:
+            font_name: 'Arial'
+            halign: "right"
+            bold:True
+            font_size:26
+            text: get_display(arabic_reshaper.reshape(' من فضلك أدخل تفاصيل الميعاد لتميزه ضع المؤشروأكتب')) 
+            background_color:0, 0, 1, 1
+
+
+
+
+        Button:
+            font_name: 'Arial'
+            halign: "right"
+            font_size:26
+            text: get_display(arabic_reshaper.reshape(' حفظ الميعاد '))
+            background_color:0, 0, 1, 1
+            size_hint:1,.4 
+            pos:self.pos  
+            on_press:root.save()
+        
+        Button:
+            font_name: 'Arial'
+            halign: "right"
+            font_size:26
+            text: get_display(arabic_reshaper.reshape('ذهاب لمواعيدى'))
+            background_color:0, 0, 1, 1
+            size_hint:1,.4 
+            pos:self.pos
+            on_press: root.manager.current = 'settings'
+<AddScreen>:
+    BoxLayout:
+        orientation:'vertical'
+        size:root.size
+        pos: root.pos
+        padding:10
+        canvas.before:
+            Color:
+                rgba: 1, 0, 1, 1 
+                Rectangle:
+                    pos: self.pos
+                    size: self.size 
+                      
+        Button:
+            font_name: 'Arial'
+            halign: "right"
+            font_size:26
+            text: get_display(arabic_reshaper.reshape('إضافة ميعاد مسافة'))
+            background_color:0, 0, 1, 1
+            size_hint:1,1 
+            pos:50,50
+            on_press: root.manager.current = 'eria'  
+        Button:
+            id:btn1
+            font_name: 'Arial'
+            halign: "right"
+            font_size:26
+            text: get_display(arabic_reshaper.reshape('إضافة إجراء قاطع'))
+            background_color:0, 0, 1, 1
+            size_hint:1,1
+            pos:50,50 
+            on_press: root.manager.current='cut'
+        Button:
+            id:btn2
+            font_name: 'Arial'
+            halign: "right"
+            font_size:26
+            text: get_display(arabic_reshaper.reshape('إضافة إجراء واقف'))
+            background_color:0, 0, 1, 1
+            size_hint:1,1 
+            pos:50,50
+            on_press: root.upgrad2()
+
+        Button:
+            id:btn4
+            font_name: 'Arial'
+            halign: "right"
+            font_size:26
+            text: get_display(arabic_reshaper.reshape('رجوع للحاسبة'))
+            background_color:0, 0, 1, 1
+            size_hint:1,1
+            pos:50,50
+            on_press: root.manager.current = 'calc'
+<cutScreen>:
+    year:year
+    mon:mon
+    day:day
+    GridLayout:
+
+        canvas.before:
+            Color:
+                rgba: 0, 0, 1, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        cols:1
+
+
+
+
+        GridLayout:
+            cols:3
+            Label:
+                font_name: 'Arial'
+                halign: "right"
+                color:1,0,0,1
+                font_size:40
+                text: get_display(arabic_reshaper.reshape('السنة'))
+
+            Label:
+
+                font_name: 'Arial'
+                halign: "right"
+                font_size:40
+                color:0,1,0,1
+                text:today.month
+                text: get_display(arabic_reshaper.reshape('الشهر'))
+            Label:
+
+                font_name: 'Arial'
+                halign: "right"
+                font_size:40
+                color:1,1,0,1
+                text:today.day
+                text: get_display(arabic_reshaper.reshape('اليوم'))
+            Label:
+                id:year
+
+                color:1,0,0,1
+                text: root.yr() if int(slider.value)<2020 else str(slider.value)
+            Label:
+                id:mon
+                color:0,1,0,1
+                text: root.mn() if int(slider1.value)==  0 else  str(int(slider1.value))
+            Label:
+                id:day
+                color:1,1,0,1
+                text:root.dy() if int (slider2.value)== 0 else str(int(slider2.value))
+            Slider:
+                id: slider
+
+                min:2019
+                max:2050 #2000 if date.today()==date(2023,6,1) else 2050 # for user upgrad aap
+                step: 1
+                orientation: 'horizontal'
+
+
+
+            Slider:
+                id: slider1
+                min:0
+                max: 12
+                step: 1
+                orientation: 'horizontal'
+
+
+            Slider:
+                id: slider2
+                min: 0
+                max:31 if  mon.text in ['1','3','5','7','8','10','12'] else 30 if mon.text in ['4','6','9','11'] else 29 if mon.text==2 and   int (year.text) % 4 ==0   else   28      # use if condtion in kviy file
+                step: 1
+                orientation: 'horizontal'
+        Label:
+            font_size:20
+            font_name: 'Arial'
+            halign: "right"
+            text: get_display(arabic_reshaper.reshape('حدد أخر يوم فى الأجراء القاطع'))
+            size_hint:1,.1
+
+        Button:
+            font_name: 'Arial'
+            halign: "right"
+            text: get_display(arabic_reshaper.reshape('أضف إجراءقاطع'))
+            size_hint:1,.1
+            background_color:1,0,0,1
+

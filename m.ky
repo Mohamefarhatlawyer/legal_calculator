@@ -1,0 +1,42 @@
+#:import arabic_reshaper arabic_reshaper
+#:import get_display bidi.algorithm.get_display
+MDBoxLayout:
+
+    orientation:'vertical'
+    MDScreen:
+
+        MDLabel:
+            id: la
+
+            font_name: 'Arial'
+            halign: "center"
+            font_size:18
+            text_size: self.width, None
+            bold:True
+            italic:True
+            color:1,1,1,1
+            #size_hint:1,0
+            #size:self.size
+            #text: ' jjjjjj'
+            #text: get_display(arabic_reshaper.reshape('\nإدارة الأبحاث والتطوبر\n بمكتب اﻷستاذين \nإبراهيم فرحات ومحمد فرحات المحاميان '))
+
+        FitImage:
+            id: image1
+            source: "n.jpg"
+            size_hint_y: .35
+            pos_hint: {"top": 1}
+            radius: [36, 36, 0, 0, ]
+        FitImage:
+            id: image2
+            source: "s.jpg"
+            size_hint_y: .35
+
+            radius: [36, 36, 0, 0, ]
+        MDFloatingActionButtonSpeedDial:
+            data:app.data
+            root_Button_anim:True
+            hint_animation: True
+            bg_color_stack_button:1,0,0,1
+            callback:app.callback
+            on_open: app.open()
+            on_close:app.close()
