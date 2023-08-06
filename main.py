@@ -39,16 +39,6 @@ class IntroScreen(Screen):
         webbrowser.open(url,new=new)
 
 
-class MainScreen(Screen):
-
-    def up_grad(self):
-        self.ids.btn5.text = get_display(arabic_reshaper.reshape('تحت التطوير'))
-
-    def up_grad4(self):
-        self.ids.btn6.text = get_display(arabic_reshaper.reshape('تحت التطوير'))
-
-    def up_grad5(self):
-        self.ids.btn7.text = get_display(arabic_reshaper.reshape('تحت التطوير'))
 
 
 class CalcScreen(Screen):
